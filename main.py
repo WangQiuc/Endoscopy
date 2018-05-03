@@ -20,8 +20,8 @@ class TumorClassifier:
 
 if __name__ == '__main__':
 	tc = TumorClassifier()
-	tc.data_utils.data_extract('train')
-	tc.data_utils.data_augment()
+	# tc.data_utils.data_extract('train')
+	# tc.data_utils.data_augment()
 	# tc.data_utils.image_sampling(check_aug=True)
 	# tc.data_utils.image_sampling()
 	# tc.transfer_learner.train('resnet50')

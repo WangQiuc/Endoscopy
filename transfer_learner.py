@@ -7,6 +7,7 @@ from itertools import permutations
 from keras.applications import ResNet50, Xception
 from keras.models import Model
 from keras.layers import Input, Flatten, Dense
+from keras.utils import np_utils
 from keras import backend as K, regularizers
 from sklearn import metrics as metrics
 
@@ -70,9 +71,9 @@ class TransferLearner:
 		# parameter tuning
 		b_score, b_r1, b_r2, b_pred = 0, 0, 0, np.array([])
 		logger_tc.info('parameter tuning')
-		# for r1, r2 in [(5e-4, 1e-6)]:
-		# for r1, r2 in [(np.random.choice(np.arange(50, 100), 2) / 1000.) for _ in range(3)]:
-		for r1, r2 in permutations([1e-1, 1e-2, 1e-3], 2):
+		# for r1, r2 in permutations([1e-2, 1e-3, 1e-4], 2):
+		# for r1, r2 in [(np.random.randint(1, 10) / 1000., np.random.randint(1, 10) / 10000.) for _ in range(5)]:
+		for r1, r2 in [(1e-2, 5e-4)]:
 			# input extracted features to 2 FC layers (2048 -(RELU)-> 1024 -(SOFTMAX)-> 2) to get result
 			input_tensor = Input(shape=(1, 1, 2048))
 			X = Flatten()(input_tensor)
@@ -80,7 +81,7 @@ class TransferLearner:
 			predictions = Dense(self.num_classes, activation='softmax', kernel_regularizer=regularizers.l2(r2))(X)
 			model = Model(inputs=input_tensor, outputs=predictions)
 			model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-			model.fit(transfer_train_output, y_train, epochs=20, batch_size=128)
+			model.fit(transfer_train_output, y_train, epochs=30, batch_size=128, verbose=1)
 			# validate
 			pred = model.predict(transfer_valid_output, batch_size=32)
 			y_pred = np.zeros(len(pred), dtype=int)
@@ -89,25 +90,27 @@ class TransferLearner:
 			if score > b_score:
 				b_score, b_r1, b_r2, b_pred = score, r1, r2, pred
 			logger_tc.info('cur: acc %s, r1 %s, r2 %s; best: acc %s, r1 %s, r2 %s' % (score, r1, r2, b_score, b_r1, b_r2))
-		# if cross_val:
-		# 	return b_score
-		# with h5py.File(self.model_output_path) as model_output:
-		# 	if '%s_valid_pred' % classifier not in model_output:
-		# 		model_output.create_dataset('%s_valid_pred' % classifier, data=b_pred)
+		if cross_val:
+			return b_score
+		with h5py.File(self.model_output_path) as model_output:
+			if '%s_valid_pred' % classifier not in model_output:
+				model_output.create_dataset('%s_valid_pred' % classifier, data=b_pred)
 
 	def cross_validation(self, classifier, fold=5):
 		du = DataUtils()
 		scores = []
-		for i in range(fold):
+		for i in range(1, fold + 1):
 			logger_tc.info('cross validation fold %s start' % i)
 			X_train, y_train, X_valid, y_valid = du.data_extract('cross_val')
 			X_train, X_valid, y_train, y_valid=\
 				du.augmentation(X_train), du.augmentation(X_valid), np.tile(y_train, (8, 1)), np.tile(y_valid, (8, 1))
 			train_mean, train_std = np.mean(X_train, axis=0), np.std(X_train, axis=0)
 			X_train, X_valid = (X_train - train_mean) / train_std, (X_valid - train_mean) / train_std
+			y_train = np_utils.to_categorical(y_train[:, 1], self.num_classes)
 			scores += self.train(classifier, True, X_train, y_train, X_valid, y_valid),
 			logger_tc.info('cross validation fold %s end\n\n' % i)
-		logger_tc.info('%s %s fold cross val: avg acc: %s, std: %s') % (classifier, fold, np.mean(scores), np.std(scores))
+		logger_tc.info(scores)
+		logger_tc.info('%s %s fold cross val: avg acc: %s, std: %s' % (classifier, fold, np.mean(scores), np.std(scores)))
 
 
 	def test(self):
