@@ -25,47 +25,49 @@ class DataUtils:
 		self.data_path = os.path.realpath('data/data.h5')
 		self.num_classes = 2
 
-	# extract features from images and labels for csv, image resolution as 224 * 224, mode as 'train' or 'test'
+	# extract features from images and labels for csv, image resolution as 299 * 299, mode as 'train', 'cross_val', 'test'
 	def data_extract(self, mode):
 		with h5py.File(self.data_path) as data:
 			if 'X_%s' % mode in data:
 				logger_tc.info('%s data exists.' % mode)
 				return
-		img_path, label_path = (self.img_train_path, self.label_train_path) if mode == 'train' \
-			else (self.img_test_path, self.label_test_path)
+		img_path, label_path = (self.img_test_path, self.label_test_path) if mode == 'test' \
+			else (self.img_train_path, self.label_train_path)
 		features = np.concatenate(
 			[image.img_to_array(image.load_img(os.path.join(img_path, img), target_size=(299, 299)))[np.newaxis]
 			 for img in sorted(os.listdir(img_path))], axis=0)
 		labels = np.genfromtxt(label_path, dtype=int, delimiter=',', filling_values=1)
 		logger_tc.info('feature shape: %s\tlabel shape: %s' % (features.shape, labels.shape))
 
-		# if mode is test, there is no need to split data
+		# if mode is 'test', there is no need to split data
 		if mode == 'test':
 			with h5py.File(self.data_path) as data:
 				data.create_dataset('X_test', data=features), data.create_dataset('y_test', data=labels)
 
-		# if mode is train, need to split data into train and validation data set
+		# if mode is 'train' or 'cross_val', need to split data into train and validation data set
 		else:
 			# split positive and negative samples and split train and validation respectively to keep the proportion
 			pos_idx, neg_idx = np.where(labels[:, 1] == 1)[0], np.where(labels[:, 1] == 0)[0]
 			logger_tc.info('postive sample: %s\tnegative sample: %s' % (len(pos_idx), len(neg_idx)))
 
-			# split train and test(validation) by 9 : 1 and merge positive and negative samples in train and test data respectively
-			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx],
-			                                                                test_size=0.1, random_state=15)
-			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx],
-			                                                                test_size=0.1, random_state=16)
+			# split train and validation by 9 : 1 and merge positive and negative samples in train and val data respectively
+			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.1)
+			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.1)
 			X_train, X_valid = np.concatenate((X_pos_train, X_neg_train)), np.concatenate((X_pos_valid, X_neg_valid))
 			y_train, y_valid = np.concatenate((y_pos_train, y_neg_train)), np.concatenate((y_pos_valid, y_neg_valid))
 			logger_tc.info('train features shape: %s\tvalid features shape: %s' % (X_train.shape, X_valid.shape))
 			logger_tc.info('train labels shape: %s\tvalid labels shape: %s' % (y_train.shape, y_valid.shape))
-
-			with h5py.File(self.data_path) as data:
-				data.create_dataset('X_train', data=X_train), data.create_dataset('y_train', data=y_train)
-				data.create_dataset('X_valid', data=X_valid), data.create_dataset('y_valid', data=y_valid)
+			# if mode is 'train', data need to be saved in data.h5
+			if mode == 'train':
+				with h5py.File(self.data_path) as data:
+					data.create_dataset('X_train', data=X_train), data.create_dataset('y_train', data=y_train)
+					data.create_dataset('X_valid', data=X_valid), data.create_dataset('y_valid', data=y_valid)
+			# if mode is 'cross_val', function need to return data
+			else:
+				return X_train, y_train, X_valid, y_valid
 
 	# augment data 8 times via rotate each image by 0°, 90°, 180°, 270° and take symmetry
-	def __augmentation(self, data):
+	def augmentation(self, data):
 		aug_data = data
 		sym = 0
 		while sym < 2:
@@ -84,7 +86,7 @@ class DataUtils:
 				return
 
 		with h5py.File(self.data_path) as data:
-			X_train_a, X_valid_a = self.__augmentation(data['X_train'][:]), self.__augmentation(data['X_valid'][:])
+			X_train_a, X_valid_a = self.augmentation(data['X_train'][:]), self.augmentation(data['X_valid'][:])
 			y_train_a, y_valid_a = np.tile(data['y_train'][:], (8, 1)), np.tile(data['y_valid'][:], (8, 1))
 			logger_tc.info(
 				'train aug features shape: %s\tvalid aug features shape: %s' % (X_train_a.shape, X_valid_a.shape))
@@ -131,13 +133,11 @@ class DataUtils:
 					data.create_dataset('train_mean', data=train_mean), data.create_dataset('train_std', data=train_std)
 				y_train, y_valid = data['y_train_a'][:], data['y_valid_a'][:]
 			# y_train need to be one-hot coded to be fit during the training
-			return (X_train - train_mean) / train_std, (X_valid - train_mean) / train_std, \
-			       np_utils.to_categorical(y_train[:, 1], self.num_classes), y_valid
+			return (X_train - train_mean) / train_std, np_utils.to_categorical(y_train[:, 1], self.num_classes),\
+				   (X_valid - train_mean) / train_std, y_valid
 		else:
 			with h5py.File(self.data_path) as data:
-				X_test, y_test = data['X_test'][:], data['y_test'][:]
-				train_mean, train_std = data['train_mean'][:], data['train_std'][:]
-				return (X_test - train_mean) / train_std, y_test
+				return (data['X_test'][:] - data['train_mean'][:]) / data['train_std'][:], data['y_test'][:]
 
 
 if __name__ == '__main__':
