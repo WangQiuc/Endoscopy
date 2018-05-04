@@ -60,13 +60,13 @@ class TransferLearner:
 			X_train, y_train, X_valid, y_valid = self.du.data_preprocess('train')
 			# get pre-trained cnn's result as extracted features
 			logger_tc.info('start transfer learning')
-			transfer_train_output = self._get_transfer(X_train, 'cross_val', classifier)
-			transfer_valid_output = self._get_transfer(X_valid, 'cross_val', classifier)
+			transfer_train_output = self._get_transfer(X_train, 'train', classifier)
+			transfer_valid_output = self._get_transfer(X_valid, 'valid', classifier)
 		else:
 			X_train, y_train, X_valid, y_valid = inputs
 			logger_tc.info('start transfer learning')
-			transfer_train_output = self._get_transfer(X_train, 'train', classifier)
-			transfer_valid_output = self._get_transfer(X_valid, 'valid', classifier)
+			transfer_train_output = self._get_transfer(X_train, 'cross_val', classifier)
+			transfer_valid_output = self._get_transfer(X_valid, 'cross_val', classifier)
 
 		# parameter tuning
 		b_score, b_r1, b_r2, b_pred = 0, 0, 0, np.array([])
@@ -81,7 +81,9 @@ class TransferLearner:
 			predictions = Dense(self.num_classes, activation='softmax', kernel_regularizer=regularizers.l2(r2))(X)
 			model = Model(inputs=input_tensor, outputs=predictions)
 			model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-			model.fit(transfer_train_output, y_train, epochs=30, batch_size=128, verbose=1)
+			model.fit(transfer_train_output, y_train, epochs=30, batch_size=128, verbose=0)
+			# only save model when parameter and cross validation finished
+			model.save(self.model_path)
 			# validate
 			pred = model.predict(transfer_valid_output, batch_size=32)
 			y_pred = np.zeros(len(pred), dtype=int)
