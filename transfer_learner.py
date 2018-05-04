@@ -5,7 +5,7 @@ import numpy as np
 from itertools import permutations
 
 from keras.applications import ResNet50, Xception
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.layers import Input, Flatten, Dense
 from keras.utils import np_utils
 from keras import backend as K, regularizers
@@ -45,9 +45,9 @@ class TransferLearner:
 		base = clf(False, weights, Input(shape=(299, 299, 3)), classes=self.num_classes)
 		f = K.function([base.layers[0].input, K.learning_phase()], [base.layers[-1].output])
 		# split whole data set to 100 per batch due to memory issue
-		transfer_output = [f([X[i:i + 100], 0])[0] for i in range(0, len(X), 100)]
+		transfer_output = [f([X[i: i + 100], 0])[0] for i in range(0, len(X), 100)]
 		transfer_output = np.concatenate(transfer_output, axis=0)
-		if mode != 'cross_val':
+		if mode != 'no_save':
 			with h5py.File(self.model_output_path) as model_output:
 				model_output.create_dataset(path, data=transfer_output)
 		return transfer_output
@@ -65,8 +65,8 @@ class TransferLearner:
 		else:
 			X_train, y_train, X_valid, y_valid = inputs
 			logger_tc.info('start transfer learning')
-			transfer_train_output = self._get_transfer(X_train, 'cross_val', classifier)
-			transfer_valid_output = self._get_transfer(X_valid, 'cross_val', classifier)
+			transfer_train_output = self._get_transfer(X_train, 'no_save', classifier)
+			transfer_valid_output = self._get_transfer(X_valid, 'no_save', classifier)
 
 		# parameter tuning
 		b_score, b_r1, b_r2, b_pred = 0, 0, 0, np.array([])
@@ -91,7 +91,7 @@ class TransferLearner:
 			score = metrics.accuracy_score(y_valid[:, 1], y_pred)
 			if score > b_score:
 				b_score, b_r1, b_r2, b_pred = score, r1, r2, pred
-			logger_tc.info('cur: acc %s, r1 %s, r2 %s; best: acc %s, r1 %s, r2 %s' % (score, r1, r2, b_score, b_r1, b_r2))
+			logger_tc.info('cur: acc %.3f, r1 %s, r2 %s; best: acc %.3f, r1 %s, r2 %s' % (score, r1, r2, b_score, b_r1, b_r2))
 		if cross_val:
 			return b_score
 		with h5py.File(self.model_output_path) as model_output:
@@ -114,9 +114,20 @@ class TransferLearner:
 		logger_tc.info(scores)
 		logger_tc.info('%s %s fold cross val: avg acc: %s, std: %s' % (classifier, fold, np.mean(scores), np.std(scores)))
 
+	def predict(self, X, classifier):
+		with h5py.File('data/data.h5') as data:
+			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
+			X = (X - train_mean) / train_std
+			X = self._get_transfer(X, 'no_save', classifier)
+			model = load_model(self.model_path)
+			return model.predict(X, batch_size=32)
 
-	def test(self):
-		pass
+	def test(self, X_test, y_test, classifier):
+		pred = self.predict(X_test, classifier)
+		y_pred = np.zeros(len(pred), dtype=int)
+		y_pred[pred[:, 1] > pred[:, 0]] = 1
+		score = metrics.accuracy_score(y_test[:, 1], y_pred)
+		logger_tc.info('test accuracy: %.3f' % score)
 
 
 if __name__ == '__main__':
