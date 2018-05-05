@@ -51,8 +51,8 @@ class DataUtils:
 			logger_tc.info('postive sample: %s\tnegative sample: %s' % (len(pos_idx), len(neg_idx)))
 
 			# split train and validation by 9 : 1 and merge positive and negative samples in train and val data respectively
-			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.1, random_state=15)
-			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.1, random_state=16)
+			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.1)
+			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.1)
 			X_train, X_valid = np.concatenate((X_pos_train, X_neg_train)), np.concatenate((X_pos_valid, X_neg_valid))
 			y_train, y_valid = np.concatenate((y_pos_train, y_neg_train)), np.concatenate((y_pos_valid, y_neg_valid))
 			logger_tc.info('train features shape: %s\tvalid features shape: %s' % (X_train.shape, X_valid.shape))
