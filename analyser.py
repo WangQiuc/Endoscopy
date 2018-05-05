@@ -31,6 +31,8 @@ class Analyser:
 		self.num_classes = 2
 		self.transfer_classifiers = {'resnet50': (ResNet50, self.resnet50_weights),
 									 'xception': (Xception, self.xception_weights)}
+		self.layer_stages = {'resnet50': [3, 36, 78, 140, 172],
+		                     'xception': []}
 
 	# output roc curve
 	def roc_curve(self, y_set, yp_set):
@@ -42,18 +44,29 @@ class Analyser:
 		plt.xlabel('False Positive Rate'), plt.ylabel('True Poistive Rate'), plt.legend(loc='lower right')
 		plt.show()
 
-	# visualize first layers of the cnn
-	def bottom_layer_visualizer(self, classifier):
+	# visualize specific layer of the cnn, ResNet50 have 5 stages {1,2,3,4,5}
+	def layer_visualizer(self, classifier, stage=0):
 		with h5py.File(self.data_path) as data:
 			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
 			idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 1)
-			sample = data['X_train'][:][idx]
-			x = ((sample - train_mean) / train_std)[np.newaxis]
+			sample, sample_id = data['X_valid'][:][idx], data['y_valid'][:][idx, 0][0]
+			# show original img
+			# plt.imshow(np.uint8(sample[0]))
+			# plt.show()
+			x = ((sample - train_mean) / train_std)
+		layer = self.layer_stages[classifier][stage-1]
 		clf, weights = self.transfer_classifiers[classifier]
-		base = clf(False, weights, Input(shape=(299, 299, 3)), classes=self.num_classes)
-		f = K.function([base.layers[0].input, K.learning_phase()], [base.layers[2].output])
-		bottom_layer = f([x, 0])[0]
-		print(bottom_layer)
+		model = clf(False, weights, Input(shape=(299, 299, 3)), classes=self.num_classes)
+		f = K.function([model.layers[0].input, K.learning_phase()], [model.layers[layer].output])
+		bottom_layer = f([x, 0])[0][0]
+		# use number of dimensions to determine the layout of subplot
+		dimensions, divider = bottom_layer.shape[-1], 2 ** (stage // 2 + 3)
+		plt.figure(figsize=(100, 100), facecolor=(0.2, 0.2, 0.2))
+		for i in range(bottom_layer.shape[-1]):
+			plt.subplot(divider, dimensions // divider, i+1)
+			sns.heatmap(bottom_layer[:, :, i], cmap='binary', xticklabels=False, yticklabels=False, cbar=False)
+		plt.suptitle('sample %s' % sample_id, color='white')
+		plt.show()
 
 	# shift an occluded area over a positive image and collect positive probability on different occluded position
 	# generate a hot map based on the collections to see which position positive probability is more sensitive to
@@ -62,11 +75,10 @@ class Analyser:
 		with h5py.File(self.data_path) as data:
 			idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 3, replace=False)
 			sample_ids = data['y_valid'][:][idx, 0]
-			logger_tc.info('sample images %s' % ', '.join(map(str, sample_ids)))
 			samples = data['X_valid'][:][idx]
 		pic_len, occ_len = samples.shape[1], 60
 		hot_maps = []
-		model = tl.train('resnet50', 'model')
+		model = tl.train(classifier, 'model')
 		for i in range(3):
 			occ_samples = []
 			sample = samples[i]
@@ -84,11 +96,12 @@ class Analyser:
 			plt.title('sample %s' % sample_ids[i])
 			plt.imshow(np.uint8(samples[i]))
 			plt.subplot(2, 3, i + 4)
-			sns.heatmap(hot_maps[i])
+			sns.heatmap(hot_maps[i], cmap='magma', xticklabels=False, yticklabels=False)
 		plt.show()
 
 
 if __name__ == '__main__':
 	al = Analyser()
 	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
-	al.hotmap('resnet50')
+	al.layer_visualizer('resnet50', stage=3)
+	# al.hotmap('resnet50')

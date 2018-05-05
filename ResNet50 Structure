@@ -1,0 +1,350 @@
+ResNet50 Structure
+
+0 input_1
+1 conv1
+2 bn_conv1
+3 activation_1
+4 max_pooling2d_1
+5 res2a_branch2a
+6 bn2a_branch2a
+7 activation_2
+8 res2a_branch2b
+9 bn2a_branch2b
+10 activation_3
+11 res2a_branch2c
+12 res2a_branch1
+13 bn2a_branch2c
+14 bn2a_branch1
+15 add_1
+16 activation_4
+17 res2b_branch2a
+18 bn2b_branch2a
+19 activation_5
+20 res2b_branch2b
+21 bn2b_branch2b
+22 activation_6
+23 res2b_branch2c
+24 bn2b_branch2c
+25 add_2
+26 activation_7
+27 res2c_branch2a
+28 bn2c_branch2a
+29 activation_8
+30 res2c_branch2b
+31 bn2c_branch2b
+32 activation_9
+33 res2c_branch2c
+34 bn2c_branch2c
+35 add_3
+36 activation_10
+37 res3a_branch2a
+38 bn3a_branch2a
+39 activation_11
+40 res3a_branch2b
+41 bn3a_branch2b
+42 activation_12
+43 res3a_branch2c
+44 res3a_branch1
+45 bn3a_branch2c
+46 bn3a_branch1
+47 add_4
+48 activation_13
+49 res3b_branch2a
+50 bn3b_branch2a
+51 activation_14
+52 res3b_branch2b
+53 bn3b_branch2b
+54 activation_15
+55 res3b_branch2c
+56 bn3b_branch2c
+57 add_5
+58 activation_16
+59 res3c_branch2a
+60 bn3c_branch2a
+61 activation_17
+62 res3c_branch2b
+63 bn3c_branch2b
+64 activation_18
+65 res3c_branch2c
+66 bn3c_branch2c
+67 add_6
+68 activation_19
+69 res3d_branch2a
+70 bn3d_branch2a
+71 activation_20
+72 res3d_branch2b
+73 bn3d_branch2b
+74 activation_21
+75 res3d_branch2c
+76 bn3d_branch2c
+77 add_7
+78 activation_22
+79 res4a_branch2a
+80 bn4a_branch2a
+81 activation_23
+82 res4a_branch2b
+83 bn4a_branch2b
+84 activation_24
+85 res4a_branch2c
+86 res4a_branch1
+87 bn4a_branch2c
+88 bn4a_branch1
+89 add_8
+90 activation_25
+91 res4b_branch2a
+92 bn4b_branch2a
+93 activation_26
+94 res4b_branch2b
+95 bn4b_branch2b
+96 activation_27
+97 res4b_branch2c
+98 bn4b_branch2c
+99 add_9
+100 activation_28
+101 res4c_branch2a
+102 bn4c_branch2a
+103 activation_29
+104 res4c_branch2b
+105 bn4c_branch2b
+106 activation_30
+107 res4c_branch2c
+108 bn4c_branch2c
+109 add_10
+110 activation_31
+111 res4d_branch2a
+112 bn4d_branch2a
+113 activation_32
+114 res4d_branch2b
+115 bn4d_branch2b
+116 activation_33
+117 res4d_branch2c
+118 bn4d_branch2c
+119 add_11
+120 activation_34
+121 res4e_branch2a
+122 bn4e_branch2a
+123 activation_35
+124 res4e_branch2b
+125 bn4e_branch2b
+126 activation_36
+127 res4e_branch2c
+128 bn4e_branch2c
+129 add_12
+130 activation_37
+131 res4f_branch2a
+132 bn4f_branch2a
+133 activation_38
+134 res4f_branch2b
+135 bn4f_branch2b
+136 activation_39
+137 res4f_branch2c
+138 bn4f_branch2c
+139 add_13
+140 activation_40
+141 res5a_branch2a
+142 bn5a_branch2a
+143 activation_41
+144 res5a_branch2b
+145 bn5a_branch2b
+146 activation_42
+147 res5a_branch2c
+148 res5a_branch1
+149 bn5a_branch2c
+150 bn5a_branch1
+151 add_14
+152 activation_43
+153 res5b_branch2a
+154 bn5b_branch2a
+155 activation_44
+156 res5b_branch2b
+157 bn5b_branch2b
+158 activation_45
+159 res5b_branch2c
+160 bn5b_branch2c
+161 add_15
+162 activation_46
+163 res5c_branch2a
+164 bn5c_branch2a
+165 activation_47
+166 res5c_branch2b
+167 bn5c_branch2b
+168 activation_48
+169 res5c_branch2c
+170 bn5c_branch2c
+171 add_16
+172 activation_49
+173 avg_pool
+
+0 (299, 299, 3)
+1 (150, 150, 64)
+2 (150, 150, 64)
+3 (150, 150, 64)
+4 (74, 74, 64)
+5 (74, 74, 64)
+6 (74, 74, 64)
+7 (74, 74, 64)
+8 (74, 74, 64)
+9 (74, 74, 64)
+10 (74, 74, 64)
+11 (74, 74, 256)
+12 (74, 74, 256)
+13 (74, 74, 256)
+14 (74, 74, 256)
+15 (74, 74, 256)
+16 (74, 74, 256)
+17 (74, 74, 64)
+18 (74, 74, 64)
+19 (74, 74, 64)
+20 (74, 74, 64)
+21 (74, 74, 64)
+22 (74, 74, 64)
+23 (74, 74, 256)
+24 (74, 74, 256)
+25 (74, 74, 256)
+26 (74, 74, 256)
+27 (74, 74, 64)
+28 (74, 74, 64)
+29 (74, 74, 64)
+30 (74, 74, 64)
+31 (74, 74, 64)
+32 (74, 74, 64)
+33 (74, 74, 256)
+34 (74, 74, 256)
+35 (74, 74, 256)
+36 (74, 74, 256)
+37 (37, 37, 128)
+38 (37, 37, 128)
+39 (37, 37, 128)
+40 (37, 37, 128)
+41 (37, 37, 128)
+42 (37, 37, 128)
+43 (37, 37, 512)
+44 (37, 37, 512)
+45 (37, 37, 512)
+46 (37, 37, 512)
+47 (37, 37, 512)
+48 (37, 37, 512)
+49 (37, 37, 128)
+50 (37, 37, 128)
+51 (37, 37, 128)
+52 (37, 37, 128)
+53 (37, 37, 128)
+54 (37, 37, 128)
+55 (37, 37, 512)
+56 (37, 37, 512)
+57 (37, 37, 512)
+58 (37, 37, 512)
+59 (37, 37, 128)
+60 (37, 37, 128)
+61 (37, 37, 128)
+62 (37, 37, 128)
+63 (37, 37, 128)
+64 (37, 37, 128)
+65 (37, 37, 512)
+66 (37, 37, 512)
+67 (37, 37, 512)
+68 (37, 37, 512)
+69 (37, 37, 128)
+70 (37, 37, 128)
+71 (37, 37, 128)
+72 (37, 37, 128)
+73 (37, 37, 128)
+74 (37, 37, 128)
+75 (37, 37, 512)
+76 (37, 37, 512)
+77 (37, 37, 512)
+78 (37, 37, 512)
+79 (19, 19, 256)
+80 (19, 19, 256)
+81 (19, 19, 256)
+82 (19, 19, 256)
+83 (19, 19, 256)
+84 (19, 19, 256)
+85 (19, 19, 1024)
+86 (19, 19, 1024)
+87 (19, 19, 1024)
+88 (19, 19, 1024)
+89 (19, 19, 1024)
+90 (19, 19, 1024)
+91 (19, 19, 256)
+92 (19, 19, 256)
+93 (19, 19, 256)
+94 (19, 19, 256)
+95 (19, 19, 256)
+96 (19, 19, 256)
+97 (19, 19, 1024)
+98 (19, 19, 1024)
+99 (19, 19, 1024)
+100 (19, 19, 1024)
+101 (19, 19, 256)
+102 (19, 19, 256)
+103 (19, 19, 256)
+104 (19, 19, 256)
+105 (19, 19, 256)
+106 (19, 19, 256)
+107 (19, 19, 1024)
+108 (19, 19, 1024)
+109 (19, 19, 1024)
+110 (19, 19, 1024)
+111 (19, 19, 256)
+112 (19, 19, 256)
+113 (19, 19, 256)
+114 (19, 19, 256)
+115 (19, 19, 256)
+116 (19, 19, 256)
+117 (19, 19, 1024)
+118 (19, 19, 1024)
+119 (19, 19, 1024)
+120 (19, 19, 1024)
+121 (19, 19, 256)
+122 (19, 19, 256)
+123 (19, 19, 256)
+124 (19, 19, 256)
+125 (19, 19, 256)
+126 (19, 19, 256)
+127 (19, 19, 1024)
+128 (19, 19, 1024)
+129 (19, 19, 1024)
+130 (19, 19, 1024)
+131 (19, 19, 256)
+132 (19, 19, 256)
+133 (19, 19, 256)
+134 (19, 19, 256)
+135 (19, 19, 256)
+136 (19, 19, 256)
+137 (19, 19, 1024)
+138 (19, 19, 1024)
+139 (19, 19, 1024)
+140 (19, 19, 1024)
+141 (10, 10, 512)
+142 (10, 10, 512)
+143 (10, 10, 512)
+144 (10, 10, 512)
+145 (10, 10, 512)
+146 (10, 10, 512)
+147 (10, 10, 2048)
+148 (10, 10, 2048)
+149 (10, 10, 2048)
+150 (10, 10, 2048)
+151 (10, 10, 2048)
+152 (10, 10, 2048)
+153 (10, 10, 512)
+154 (10, 10, 512)
+155 (10, 10, 512)
+156 (10, 10, 512)
+157 (10, 10, 512)
+158 (10, 10, 512)
+159 (10, 10, 2048)
+160 (10, 10, 2048)
+161 (10, 10, 2048)
+162 (10, 10, 2048)
+163 (10, 10, 512)
+164 (10, 10, 512)
+165 (10, 10, 512)
+166 (10, 10, 512)
+167 (10, 10, 512)
+168 (10, 10, 512)
+169 (10, 10, 2048)
+170 (10, 10, 2048)
+171 (10, 10, 2048)
+172 (10, 10, 2048)

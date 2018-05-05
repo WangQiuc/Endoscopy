@@ -27,4 +27,5 @@ if __name__ == '__main__':
 	# tc.transfer_learner.train('resnet50')
 	# tc.transfer_learner.cross_validation('resnet50')
 	# tc.analyser.roc_curve('y_valid_a', 'resnet50_valid_pred')
+	# tc.analyser.layer_visualizer('resnet50')
 	tc.analyser.hotmap('resnet50')
