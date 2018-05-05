@@ -54,8 +54,8 @@ class TransferLearner:
 
 
 	# if cross_val is on, inputs should be X_train, y_train, X_valid, y_valid which have been preprocessed
-	def train(self, classifier, cross_val=False, *inputs):
-		if not cross_val:
+	def train(self, classifier, mode=None, *inputs):
+		if mode != 'cross_val':
 			# data preprocess
 			X_train, y_train, X_valid, y_valid = self.du.data_preprocess('train')
 			# get pre-trained cnn's result as extracted features
@@ -92,7 +92,9 @@ class TransferLearner:
 			if score > b_score:
 				b_score, b_r1, b_r2, b_pred = score, r1, r2, pred
 			logger_tc.info('cur: acc %.3f, r1 %s, r2 %s; best: acc %.3f, r1 %s, r2 %s' % (score, r1, r2, b_score, b_r1, b_r2))
-		if cross_val:
+			if mode == 'model':
+				return model
+		if mode == 'cross_val':
 			return b_score
 		with h5py.File(self.model_output_path) as model_output:
 			if '%s_valid_pred' % classifier not in model_output:
@@ -109,17 +111,17 @@ class TransferLearner:
 			train_mean, train_std = np.mean(X_train, axis=0), np.std(X_train, axis=0)
 			X_train, X_valid = (X_train - train_mean) / train_std, (X_valid - train_mean) / train_std
 			y_train = np_utils.to_categorical(y_train[:, 1], self.num_classes)
-			scores += self.train(classifier, True, X_train, y_train, X_valid, y_valid),
+			scores += self.train(classifier, 'cross_val', X_train, y_train, X_valid, y_valid),
 			logger_tc.info('cross validation fold %s end\n\n' % i)
 		logger_tc.info(scores)
 		logger_tc.info('%s %s fold cross val: avg acc: %s, std: %s' % (classifier, fold, np.mean(scores), np.std(scores)))
 
-	def predict(self, X, classifier):
+	def predict(self, X, classifier, model):
 		with h5py.File('data/data.h5') as data:
 			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
 			X = (X - train_mean) / train_std
 			X = self._get_transfer(X, 'no_save', classifier)
-			model = load_model(self.model_path)
+			# model = load_model(self.model_path)
 			return model.predict(X, batch_size=32)
 
 	def test(self, X_test, y_test, classifier):

@@ -61,10 +61,12 @@ class Analyser:
 		tl = TransferLearner()
 		with h5py.File(self.data_path) as data:
 			idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 3, replace=False)
-			logger_tc.info('sample images %s' % ', '.join(map(str, data['y_valid'][:][idx, 0])))
-			samples = data['X_train'][:][idx]
+			sample_ids = data['y_valid'][:][idx, 0]
+			logger_tc.info('sample images %s' % ', '.join(map(str, sample_ids)))
+			samples = data['X_valid'][:][idx]
 		pic_len, occ_len = samples.shape[1], 60
 		hot_maps = []
+		model = tl.train('resnet50', 'model')
 		for i in range(3):
 			occ_samples = []
 			sample = samples[i]
@@ -75,10 +77,11 @@ class Analyser:
 					occ_sample[row: row + occ_len, col: col + occ_len] = 0
 					occ_samples.append(occ_sample[np.newaxis])
 			occ_samples = np.concatenate(occ_samples, axis=0)
-			hot_maps.append(tl.predict(occ_samples, 'resnet50')[:, 1].reshape((pic_len // (occ_len // 6) - 5, -1)))
+			hot_maps.append(tl.predict(occ_samples, 'resnet50', model)[:, 1].reshape((pic_len // (occ_len // 6) - 5, -1)))
 		plt.figure(figsize=(100, 50))
 		for i in range(3):
 			plt.subplot(2, 3, i + 1)
+			plt.title('sample %s' % sample_ids[i])
 			plt.imshow(np.uint8(samples[i]))
 			plt.subplot(2, 3, i + 4)
 			sns.heatmap(hot_maps[i])
