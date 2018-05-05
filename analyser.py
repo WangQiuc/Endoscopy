@@ -6,16 +6,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from keras.applications import ResNet50, Xception
-from keras.models import Model, load_model
-from keras.layers import Input, Flatten, Dense
-from keras import backend as K, regularizers
+from keras.layers import Input
+from keras import backend as K
 from sklearn import metrics as metrics
 
 import os
 import h5py
 import logging
 
-from data_utils import DataUtils
 from transfer_learner import TransferLearner
 
 logging.basicConfig(level=logging.INFO, format='%(name)-12s %(asctime)s %(levelname)-8s %(message)s')
@@ -65,12 +63,12 @@ class Analyser:
 			idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 3, replace=False)
 			samples = data['X_train'][:][idx]
 			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
-		pic_len, occ_len = samples.shape[1], 7
+		pic_len, occ_len = samples.shape[1], 30
 		hot_maps, occ_samples = [], []
 		for i in range(3):
 			sample = samples[i]
-			for row in range(pic_len - occ_len):
-				for col in range(pic_len - occ_len):
+			for row in range(0, pic_len - occ_len, occ_len):
+				for col in range(0, pic_len - occ_len, occ_len):
 					# add an 7 * 7 occluded area on the sample picture
 					occ_sample = np.copy(sample)
 					occ_sample[row: row + occ_len, col: col + occ_len] = 0
@@ -88,4 +86,5 @@ class Analyser:
 
 if __name__ == '__main__':
 	al = Analyser()
-	al.roc_curve('y_valid_a', 'resnet50_valid_pred')
+	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
+	al.hotmap('resnet50')

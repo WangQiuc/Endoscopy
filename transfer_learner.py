@@ -5,7 +5,7 @@ import numpy as np
 from itertools import permutations
 
 from keras.applications import ResNet50, Xception
-from keras.models import Model, load_model, model_from_json
+from keras.models import Model, load_model
 from keras.layers import Input, Flatten, Dense
 from keras.utils import np_utils
 from keras import backend as K, regularizers
