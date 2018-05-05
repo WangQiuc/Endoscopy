@@ -3,6 +3,7 @@ __author__ = 'wangqc'
 
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from keras.applications import ResNet50, Xception
 from keras.models import Model, load_model
@@ -65,24 +66,23 @@ class Analyser:
 			samples = data['X_train'][:][idx]
 			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
 		pic_len, occ_len = samples.shape[1], 7
-		hot_maps = []
+		hot_maps, occ_samples = [], []
 		for i in range(3):
-			hot_map = np.zeros((pic_len - occ_len, pic_len - occ_len))
-			sample = samples[i][np.newaxis]
+			sample = samples[i]
 			for row in range(pic_len - occ_len):
 				for col in range(pic_len - occ_len):
 					# add an 7 * 7 occluded area on the sample picture
-					occ_sample = sample[:]
-					occ_sample[:, row: row + occ_len, col: col + occ_len] = 0
-					pred = tl.predict((occ_sample - train_mean) / train_std, classifier)
-					hot_map[row, col] = pred[0,1]
-			hot_maps += hot_map,
+					occ_sample = np.copy(sample)
+					occ_sample[row: row + occ_len, col: col + occ_len] = 0
+					occ_samples += occ_sample,
+			occ_samples = np.concatenate(occ_samples, axis=0)
+			hot_maps += tl.predict(occ_samples, 'resnet50')[:, 1].reshape((1, pic_len-occ_len, pic_len-occ_len)),
 		plt.figure(figsize=(100, 50))
 		for i in range(3):
 			plt.subplot(2, 3, i + 1)
 			plt.imshow(np.uint8(samples[i]))
 			plt.subplot(2, 3, i + 4)
-			plt.imshow(np.uint8(hot_maps[i]))
+			sns.heatmap(hot_maps[i])
 		plt.show()
 
 

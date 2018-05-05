@@ -5,7 +5,7 @@ import numpy as np
 from itertools import permutations
 
 from keras.applications import ResNet50, Xception
-from keras.models import Model, load_model
+from keras.models import Model, load_model, model_from_json
 from keras.layers import Input, Flatten, Dense
 from keras.utils import np_utils
 from keras import backend as K, regularizers
@@ -83,7 +83,7 @@ class TransferLearner:
 			model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 			model.fit(transfer_train_output, y_train, epochs=30, batch_size=128, verbose=0)
 			# only save model when parameter and cross validation finished
-			model.save(self.model_path)
+			# model.save(self.model_path)
 			# validate
 			pred = model.predict(transfer_valid_output, batch_size=32)
 			y_pred = np.zeros(len(pred), dtype=int)
