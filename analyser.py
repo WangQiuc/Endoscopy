@@ -61,20 +61,21 @@ class Analyser:
 		tl = TransferLearner()
 		with h5py.File(self.data_path) as data:
 			idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 3, replace=False)
+			logger_tc.info('sample images %s' % ', '.join(map(str, data['y_valid'][:][idx, 0])))
 			samples = data['X_train'][:][idx]
-			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
-		pic_len, occ_len = samples.shape[1], 30
-		hot_maps, occ_samples = [], []
+		pic_len, occ_len = samples.shape[1], 60
+		hot_maps = []
 		for i in range(3):
+			occ_samples = []
 			sample = samples[i]
-			for row in range(0, pic_len - occ_len, occ_len):
-				for col in range(0, pic_len - occ_len, occ_len):
-					# add an 7 * 7 occluded area on the sample picture
+			for row in range(0, pic_len - occ_len, occ_len // 6):
+				for col in range(0, pic_len - occ_len, occ_len // 6):
+					# add an 60 * 60 occluded area on the sample picture and move 10 pixels per step
 					occ_sample = np.copy(sample)
 					occ_sample[row: row + occ_len, col: col + occ_len] = 0
-					occ_samples += occ_sample,
+					occ_samples.append(occ_sample[np.newaxis])
 			occ_samples = np.concatenate(occ_samples, axis=0)
-			hot_maps += tl.predict(occ_samples, 'resnet50')[:, 1].reshape((1, pic_len-occ_len, pic_len-occ_len)),
+			hot_maps.append(tl.predict(occ_samples, 'resnet50')[:, 1].reshape((pic_len // (occ_len // 6) - 5, -1)))
 		plt.figure(figsize=(100, 50))
 		for i in range(3):
 			plt.subplot(2, 3, i + 1)
