@@ -3,7 +3,7 @@ __author__ = 'wangqc'
 
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.preprocessing import image
+from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import np_utils
 from sklearn.model_selection import train_test_split as data_split
 
@@ -34,7 +34,7 @@ class DataUtils:
 		img_path, label_path = (self.img_test_path, self.label_test_path) if mode == 'test' \
 			else (self.img_train_path, self.label_train_path)
 		features = np.concatenate(
-			[image.img_to_array(image.load_img(os.path.join(img_path, img), target_size=(299, 299)))[np.newaxis]
+			[img_to_array(load_img(os.path.join(img_path, img), target_size=(299, 299)))[np.newaxis]
 			 for img in sorted(os.listdir(img_path))], axis=0)
 		labels = np.genfromtxt(label_path, dtype=int, delimiter=',', filling_values=1)
 		logger_tc.info('feature shape: %s\tlabel shape: %s' % (features.shape, labels.shape))
