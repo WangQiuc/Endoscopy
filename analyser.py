@@ -1,19 +1,17 @@
 # coding=utf-8
 __author__ = 'wangqc'
 
+import os
+import h5py
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 from keras.applications import ResNet50, Xception
 from keras.layers import Input
 from keras.preprocessing.image import load_img, img_to_array
 from keras import backend as K
 from sklearn import metrics as metrics
-
-import os
-import h5py
-import logging
 
 from transfer_learner import TransferLearner
 
@@ -48,7 +46,7 @@ class Analyser:
 
 	# visualize specific layer of the cnn, ResNet50 have 5 stages {1,2,3,4,5}
 	def layer_visualizer(self, classifier, stage=0, source=None):
-		# pick one specific image or randomly pick from validation set
+		# pick one specific image or randomly pick one from validation set
 		with h5py.File(self.data_path) as data:
 			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
 			if source:
@@ -76,11 +74,11 @@ class Analyser:
 		plt.suptitle('sample %s' % sample_id, color='white')
 		plt.show()
 
-	# shift an occluded area over a positive image and collect positive probability on different occluded position
-	# generate a hot map based on the collections to see which position positive probability is more sensitive to
-	def hotmap(self, classifier, source=None):
+	# shift an occluded area over a positive image and collect the positive probabilities with different area occluded
+	# plot the collection on a heatmap to see which positions are more important to a positive classification
+	def heatmap(self, classifier, source=None):
 		tl = TransferLearner()
-		# pick 3 specific images or randomly pick 3 from validation set
+		# pick 3 specific images or randomly pick 3 images from validation set
 		if source:
 			samples = [img_to_array(load_img(os.path.join(self.img_path, img), target_size=(299, 299))) for img in source]
 			sample_ids = [int(img.replace('.jpg', '')) for img in source]
@@ -89,7 +87,7 @@ class Analyser:
 				idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 3, replace=False)
 				samples, sample_ids = data['X_valid'][:][idx], data['y_valid'][:][idx, 0]
 		pic_len, occ_len = len(samples[0]), 60
-		hot_maps = []
+		heat_maps = []
 		model = tl.train(classifier, 'model')
 		for i in range(3):
 			occ_samples = []
@@ -101,7 +99,7 @@ class Analyser:
 					occ_sample[row: row + occ_len, col: col + occ_len] = 0
 					occ_samples.append(occ_sample[np.newaxis])
 			occ_samples = np.concatenate(occ_samples, axis=0)
-			hot_maps.append(
+			heat_maps.append(
 				tl.predict(occ_samples, 'resnet50', model)[:, 1].reshape((pic_len // (occ_len // 6) - 5, -1)))
 		plt.figure(figsize=(100, 50))
 		for i in range(3):
@@ -110,7 +108,7 @@ class Analyser:
 			img = plt.imshow(np.uint8(samples[i]))
 			img.axes.grid(False)
 			plt.subplot(2, 3, i + 4)
-			sns.heatmap(hot_maps[i], cmap='magma', xticklabels=False, yticklabels=False)
+			sns.heatmap(heat_maps[i], cmap='magma', xticklabels=False, yticklabels=False)
 		plt.show()
 
 
@@ -118,4 +116,4 @@ if __name__ == '__main__':
 	al = Analyser()
 	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
 	# al.layer_visualizer('resnet50', stage=1, source='0149.jpg')
-	al.hotmap('resnet50', source=['0149.jpg', '0219.jpg', '0312.jpg'])
+	al.heatmap('resnet50', source=['0149.jpg', '0219.jpg', '0312.jpg'])

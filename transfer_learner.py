@@ -1,19 +1,17 @@
 # coding=utf-8
 __author__ = 'wangqc'
 
+import os
+import h5py
+import logging
 import numpy as np
 from itertools import permutations
-
 from keras.applications import ResNet50, Xception
 from keras.models import Model, load_model
 from keras.layers import Input, Flatten, Dense
 from keras.utils import np_utils
 from keras import backend as K, regularizers
 from sklearn import metrics as metrics
-
-import os
-import h5py
-import logging
 
 from data_utils import DataUtils
 

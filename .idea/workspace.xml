@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e04701f4-5bef-41bc-883f-8b1377851097" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Endoscopy.iml" afterPath="$PROJECT_DIR$/.idea/Endoscopy.iml" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/analyser.py" afterPath="$PROJECT_DIR$/analyser.py" />
       <change beforePath="$PROJECT_DIR$/data_utils.py" afterPath="$PROJECT_DIR$/data_utils.py" />
       <change beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
+      <change beforePath="$PROJECT_DIR$/transfer_learner.py" afterPath="$PROJECT_DIR$/transfer_learner.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,21 +22,9 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+            <state relative-caret-position="34">
+              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="draft.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/draft.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-114">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -41,11 +32,9 @@
       <file leaf-file-name="data_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-892">
-              <caret line="37" column="52" lean-forward="false" selection-start-line="37" selection-start-column="52" selection-end-line="37" selection-end-column="53" />
-              <folding>
-                <element signature="e#38#56#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="51">
+              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -53,20 +42,8 @@
       <file leaf-file-name="analyser.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/analyser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="120" column="69" lean-forward="true" selection-start-line="120" selection-start-column="26" selection-end-line="120" selection-end-column="69" />
-              <folding>
-                <element signature="e#38#56#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pyplot.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/matplotlib/pyplot.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4058">
-              <caret line="236" column="4" lean-forward="false" selection-start-line="236" selection-start-column="4" selection-end-line="236" selection-end-column="4" />
+            <state relative-caret-position="1632">
+              <caret line="108" column="32" lean-forward="false" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -75,11 +52,9 @@
       <file leaf-file-name="transfer_learner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transfer_learner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1344">
-              <caret line="56" column="8" lean-forward="false" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="8" />
-              <folding>
-                <element signature="e#38#56#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="51">
+              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -128,16 +103,16 @@
         <option value="$PROJECT_DIR$/classifier_trainer.py" />
         <option value="$PROJECT_DIR$/analysis.py" />
         <option value="G:/end/transfer_learner.py" />
-        <option value="$PROJECT_DIR$/transfer_learner.py" />
-        <option value="$PROJECT_DIR$/data_utils.py" />
         <option value="$PROJECT_DIR$/draft.py" />
-        <option value="$PROJECT_DIR$/analyser.py" />
+        <option value="$PROJECT_DIR$/transfer_learner.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/data_utils.py" />
+        <option value="$PROJECT_DIR$/analyser.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="49" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="782" />
   </component>
@@ -176,8 +151,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -194,6 +167,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -407,19 +382,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="782" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1264489" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12614517" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3051576" sideWeight="0.5024665" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32317737" sideWeight="0.49753347" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32317737" sideWeight="0.49753347" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20326087" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -460,7 +435,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="26" />
+      <option name="time" value="27" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -517,95 +492,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/applications/resnet50.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2424">
-          <caret line="125" column="25" lean-forward="false" selection-start-line="125" selection-start-column="13" selection-end-line="125" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/engine/topology.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="1765" column="13" lean-forward="false" selection-start-line="1765" selection-start-column="13" selection-end-line="1765" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/seaborn/matrix.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-510">
-          <caret line="293" column="4" lean-forward="false" selection-start-line="293" selection-start-column="4" selection-end-line="293" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/preprocessing/image.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="320" column="4" lean-forward="false" selection-start-line="320" selection-start-column="4" selection-end-line="320" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/applications/resnet50.py" />
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/engine/topology.py" />
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/seaborn/matrix.py" />
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/keras/preprocessing/image.py" />
     <entry file="file://$PROJECT_DIR$/ResNet50 Structure">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="24">
           <caret line="78" column="16" lean-forward="false" selection-start-line="78" selection-start-column="16" selection-end-line="78" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/matplotlib/pyplot.py">
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/matplotlib/pyplot.py" />
+    <entry file="file://$PROJECT_DIR$/draft.py" />
+    <entry file="file://$PROJECT_DIR$/analyser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4058">
-          <caret line="236" column="4" lean-forward="false" selection-start-line="236" selection-start-column="4" selection-end-line="236" selection-end-column="4" />
+        <state relative-caret-position="1632">
+          <caret line="108" column="32" lean-forward="false" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/transfer_learner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="56" column="8" lean-forward="false" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="8" />
-          <folding>
-            <element signature="e#38#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/draft.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-114">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analyser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="120" column="69" lean-forward="true" selection-start-line="120" selection-start-column="26" selection-end-line="120" selection-end-column="69" />
-          <folding>
-            <element signature="e#38#56#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="51">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-892">
-          <caret line="37" column="52" lean-forward="false" selection-start-line="37" selection-start-column="52" selection-end-line="37" selection-end-column="53" />
-          <folding>
-            <element signature="e#38#56#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="51">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+        <state relative-caret-position="34">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>

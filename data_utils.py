@@ -1,19 +1,17 @@
 # coding=utf-8
 __author__ = 'wangqc'
 
+import os
+import h5py
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import np_utils
 from sklearn.model_selection import train_test_split as data_split
 
-import os
-import h5py
-import logging
-
 logging.basicConfig(level=logging.INFO, format='%(name)-12s %(asctime)s %(levelname)-8s %(message)s')
 logger_tc = logging.getLogger('tc')
-
 
 # tools for data process
 class DataUtils:
