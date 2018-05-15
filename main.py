@@ -28,5 +28,5 @@ if __name__ == '__main__':
 	# tc.transfer_learner.cross_validation('resnet50')
 	# tc.analyser.roc_curve('y_valid_a', 'resnet50_valid_pred')
 	# tc.analyser.layer_visualizer('resnet50', stage=1, source='0149.jpg')
-	tc.analyser.heatmap('resnet50', source=['0149.jpg', '0219.jpg', '0312.jpg'])
+	tc.analyser.heatmap('resnet50', source=['0120.jpg', '0219.jpg', '0222.jpg'])
 	# tc.data_utils.data_extract('test')
