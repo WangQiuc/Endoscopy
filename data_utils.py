@@ -117,6 +117,7 @@ class DataUtils:
 				plt.imshow(np.uint8(img))
 			plt.show()
 
+	# mode = 'train' or 'test'
 	def data_preprocess(self, mode):
 		# data preprocess
 		# zero-center(minus mean) and normalization(divide std);

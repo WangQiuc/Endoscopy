@@ -32,6 +32,7 @@ class TransferLearner:
 		self.du = DataUtils()
 
 	# transfer learn from pre-trained cnn to extract the features; mode as 'train', 'valid', 'cross_val' or 'test'
+	# mode: 'train', 'valid', 'no_save' (not save result, used in cross validation and prediction for analysis and test)
 	def _get_transfer(self, X, mode, classifier):
 		path = '%s_%s' % (classifier, mode)
 		with h5py.File(self.model_output_path) as model_output:
@@ -52,6 +53,7 @@ class TransferLearner:
 
 
 	# if cross_val is on, inputs should be X_train, y_train, X_valid, y_valid which have been preprocessed
+	# mode: None (general model, save validation prediction), 'cross_val', 'model': output trained model
 	def train(self, classifier, mode=None, *inputs):
 		if mode != 'cross_val':
 			# data preprocess
@@ -99,13 +101,12 @@ class TransferLearner:
 				model_output.create_dataset('%s_valid_pred' % classifier, data=b_pred)
 
 	def cross_validation(self, classifier, fold=5):
-		du = DataUtils()
 		scores = []
 		for i in range(1, fold + 1):
 			logger_tc.info('cross validation fold %s start' % i)
-			X_train, y_train, X_valid, y_valid = du.data_extract('cross_val')
-			X_train, X_valid, y_train, y_valid=\
-				du.augmentation(X_train), du.augmentation(X_valid), np.tile(y_train, (8, 1)), np.tile(y_valid, (8, 1))
+			X_train, y_train, X_valid, y_valid = self.du.data_extract('cross_val')
+			X_train, X_valid, y_train, y_valid= self.du.augmentation(X_train), self.du.augmentation(X_valid),\
+												np.tile(y_train, (8, 1)), np.tile(y_valid, (8, 1))
 			train_mean, train_std = np.mean(X_train, axis=0), np.std(X_train, axis=0)
 			X_train, X_valid = (X_train - train_mean) / train_std, (X_valid - train_mean) / train_std
 			y_train = np_utils.to_categorical(y_train[:, 1], self.num_classes)
@@ -114,16 +115,14 @@ class TransferLearner:
 		logger_tc.info(scores)
 		logger_tc.info('%s %s fold cross val: avg acc: %s, std: %s' % (classifier, fold, np.mean(scores), np.std(scores)))
 
-	def predict(self, X, classifier, model):
-		with h5py.File('data/data.h5') as data:
-			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
-			X = (X - train_mean) / train_std
-			X = self._get_transfer(X, 'no_save', classifier)
-			# model = load_model(self.model_path)
-			return model.predict(X, batch_size=32)
+	def predict(self, X, classifier, model=None):
+		X = self._get_transfer(X, 'no_save', classifier)
+		return (model or load_model(self.model_path)).predict(X, batch_size=32)
 
-	def test(self, X_test, y_test, classifier):
-		pred = self.predict(X_test, classifier)
+	def test(self, classifier, model=None):
+		du = DataUtils()
+		X_test, y_test = du.data_preprocess('test')
+		pred = self.predict(X_test, classifier, model)
 		y_pred = np.zeros(len(pred), dtype=int)
 		y_pred[pred[:, 1] > pred[:, 0]] = 1
 		score = metrics.accuracy_score(y_test[:, 1], y_pred)
@@ -132,5 +131,6 @@ class TransferLearner:
 
 if __name__ == '__main__':
 	tl = TransferLearner()
-	tl.train('resnet50')
+	model = tl.train('resnet50', 'model')
+	tl.test('resnet50', model)
 	# tl.cross_validation('resnet50')

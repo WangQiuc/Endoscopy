@@ -43,28 +43,32 @@ class Analyser:
 		plt.plot(fpr, tpr, lw=2, label='ROC Curve (area = %.2f)' % auc_score)
 		plt.xlabel('False Positive Rate'), plt.ylabel('True Poistive Rate'), plt.legend(loc='lower right')
 		plt.show()
+		plt.savefig('output/roc_curve.jpg')
 
 	# visualize specific layer of the cnn, ResNet50 have 5 stages {1,2,3,4,5}
-	def layer_visualizer(self, classifier, stage=0, source=None):
+	def layer_visualizer(self, classifier, stage, source=None):
 		# pick one specific image or randomly pick one from validation set
-		with h5py.File(self.data_path) as data:
-			train_mean, train_std = data['train_mean'][:], data['train_std'][:]
-			if source:
-				sample = img_to_array(load_img(os.path.join(self.img_path, source), target_size=(299, 299)))[np.newaxis]
-				sample_id = int(source.replace('.jpg', ''))
-			else:
+		if source:
+			sample = img_to_array(load_img(os.path.join(self.img_path, source), target_size=(299, 299)))[np.newaxis]
+			sample_id = int(source.replace('.jpg', ''))
+		else:
+			with h5py.File(self.data_path) as data:
 				idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 1)
 				sample, sample_id = data['X_valid'][:][idx], data['y_valid'][:][idx, 0][0]
 		# show original img
 		img = plt.imshow(np.uint8(sample[0]))
 		img.axes.grid(False)
 		plt.show()
-		x = ((sample - train_mean) / train_std)
+		# preprocess sample data
+		with h5py.File(self.data_path) as data:
+			x = (sample - data['train_mean'][:]) / data['train_std'][:]
+		# build model architecture ending with different layers
 		layer = self.layer_stages[classifier][stage - 1]
 		clf, weights = self.transfer_classifiers[classifier]
 		model = clf(False, weights, Input(shape=(299, 299, 3)), classes=self.num_classes)
 		f = K.function([model.layers[0].input, K.learning_phase()], [model.layers[layer].output])
 		bottom_layer = f([x, 0])[0][0]
+
 		# use number of dimensions to determine the layout of subplot
 		dimensions, divider = bottom_layer.shape[-1], 2 ** (stage // 2 + 3)
 		plt.figure(figsize=(100, 100), facecolor=(0.2, 0.2, 0.2))
@@ -73,6 +77,7 @@ class Analyser:
 			sns.heatmap(bottom_layer[:, :, i], cmap='binary', xticklabels=False, yticklabels=False, cbar=False)
 		plt.suptitle('sample %s' % sample_id, color='white')
 		plt.show()
+		plt.savefig('output/layer_sample_stage%s.jpg' % stage)
 
 	# shift an occluded area over a positive image and collect the positive probabilities with different area occluded
 	# plot the collection on a heatmap to see which positions are more important to a positive classification
@@ -99,8 +104,13 @@ class Analyser:
 					occ_sample[row: row + occ_len, col: col + occ_len] = 0
 					occ_samples.append(occ_sample[np.newaxis])
 			occ_samples = np.concatenate(occ_samples, axis=0)
+			# preprocess sample data
+			with h5py.File(self.data_path) as data:
+				occ_samples = (occ_samples - data['train_mean'][:]) / data['train_std'][:]
+			# gather the positive probability of each occluded sample img
 			heat_maps.append(
 				tl.predict(occ_samples, 'resnet50', model)[:, 1].reshape((pic_len // (occ_len // 6) - 5, -1)))
+
 		plt.figure(figsize=(100, 50))
 		for i in range(3):
 			plt.subplot(2, 3, i + 1)
@@ -110,10 +120,12 @@ class Analyser:
 			plt.subplot(2, 3, i + 4)
 			sns.heatmap(heat_maps[i], cmap='magma', xticklabels=False, yticklabels=False)
 		plt.show()
+		plt.savefig('output/heatmap_sample.jpg')
 
 
 if __name__ == '__main__':
 	al = Analyser()
 	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
-	# al.layer_visualizer('resnet50', stage=1, source='0149.jpg')
+	# for i in range(5):
+	# 	al.layer_visualizer('resnet50', stage=i+1, source='0149.jpg')
 	al.heatmap('resnet50', source=['0149.jpg', '0219.jpg', '0312.jpg'])
