@@ -67,13 +67,13 @@ class TransferLearner:
 			logger_tc.info('start transfer learning')
 			transfer_train_output = self._get_transfer(X_train, 'no_save', classifier)
 			transfer_valid_output = self._get_transfer(X_valid, 'no_save', classifier)
-
+		logger_tc.info('transfer learning finished')
 		# parameter tuning
 		b_score, b_r1, b_r2, b_pred = 0, 0, 0, np.array([])
 		logger_tc.info('parameter tuning')
 		# for r1, r2 in permutations([1e-2, 1e-3, 1e-4], 2):
-		# for r1, r2 in [(np.random.randint(1, 10) / 1000., np.random.randint(1, 10) / 10000.) for _ in range(5)]:
-		for r1, r2 in [(1e-2, 5e-4)]:
+		# for r1, r2 in [(np.random.randint(1, 10) / 10000., np.random.randint(1, 10) / 10000.) for _ in range(5)]:
+		for r1, r2 in [(1e-3, 3e-4)]:
 			# input extracted features to 2 FC layers (2048 -(RELU)-> 1024 -(SOFTMAX)-> 2) to get result
 			input_tensor = Input(shape=(1, 1, 2048))
 			X = Flatten()(input_tensor)
@@ -127,6 +127,9 @@ class TransferLearner:
 		y_pred[pred[:, 1] > pred[:, 0]] = 1
 		score = metrics.accuracy_score(y_test[:, 1], y_pred)
 		logger_tc.info('test accuracy: %.3f' % score)
+		with h5py.File(self.model_output_path) as model_output:
+			if '%s_test_pred' % classifier not in model_output:
+				model_output.create_dataset('%s_test_pred' % classifier, data=pred)
 
 
 if __name__ == '__main__':

@@ -19,7 +19,7 @@ class DataUtils:
 		self.img_train_path = os.path.realpath('data/pic_train')
 		self.img_test_path = os.path.realpath('data/pic_test')
 		self.label_train_path = os.path.realpath('data/labels_train.csv')
-		self.label_test_path = os.path.realpath('data/labels_train.csv')
+		self.label_test_path = os.path.realpath('data/labels_test.csv')
 		self.data_path = os.path.realpath('data/data.h5')
 		self.num_classes = 2
 
@@ -49,8 +49,8 @@ class DataUtils:
 			logger_tc.info('postive sample: %s\tnegative sample: %s' % (len(pos_idx), len(neg_idx)))
 
 			# split train and validation by 9 : 1 and merge positive and negative samples in train and val data respectively
-			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.1)
-			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.1)
+			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.2)
+			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.2)
 			X_train, X_valid = np.concatenate((X_pos_train, X_neg_train)), np.concatenate((X_pos_valid, X_neg_valid))
 			y_train, y_valid = np.concatenate((y_pos_train, y_neg_train)), np.concatenate((y_pos_valid, y_neg_valid))
 			logger_tc.info('train features shape: %s\tvalid features shape: %s' % (X_train.shape, X_valid.shape))
@@ -114,6 +114,7 @@ class DataUtils:
 			plt.figure(figsize=(100, 50))
 			for i, img in enumerate(data[X_mode][sample]):
 				plt.subplot(2, 4, i + 1)
+				plt.title('sample %s' % sample_label[i, 0], fontsize=20)
 				plt.imshow(np.uint8(img))
 			plt.show()
 
@@ -141,8 +142,8 @@ class DataUtils:
 
 if __name__ == '__main__':
 	du = DataUtils()
-	du.data_extract('train')
-	du.data_augment()
-	# du.image_sampling(check_aug=True)
-	du.image_sampling()
+	# du.data_extract('train')
+	# du.data_augment()
+	# du.image_sampling(mode='valid', check_aug=True)
+	du.image_sampling(mode='valid')
 	# du.data_preprocess('train')

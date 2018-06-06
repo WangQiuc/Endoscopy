@@ -22,7 +22,8 @@ logger_tc = logging.getLogger('tc')
 # tools for classification analysis
 class Analyser:
 	def __init__(self):
-		self.img_path = os.path.realpath('data/pic_train')
+		self.img_train_path = os.path.realpath('data/pic_train')
+		self.img_test_path = os.path.realpath('data/pic_test')
 		self.resnet50_weights = os.path.realpath('models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5')
 		self.xception_weights = os.path.realpath('models/xception_weights_tf_dim_ordering_tf_kernels_notop.h5')
 		self.data_path = os.path.realpath('data/data.h5')
@@ -46,10 +47,11 @@ class Analyser:
 		plt.show()
 
 	# visualize specific layer of the cnn, ResNet50 have 5 stages {1,2,3,4,5}
-	def layer_visualizer(self, classifier, stage, source=None):
+	def layer_visualizer(self, classifier, stage, mode='test', source=None):
 		# pick one specific image or randomly pick one from validation set
+		img_path = self.img_test_path if mode == 'test' else self.img_train_path
 		if source:
-			sample = img_to_array(load_img(os.path.join(self.img_path, source), target_size=(299, 299)))[np.newaxis]
+			sample = img_to_array(load_img(os.path.join(img_path, source), target_size=(299, 299)))[np.newaxis]
 		else:
 			with h5py.File(self.data_path) as data:
 				idx = np.random.choice(np.where(data['y_valid'][:][:, 1] == 1)[0], 1)
@@ -58,7 +60,7 @@ class Analyser:
 		# img = plt.imshow(np.uint8(sample[0]))
 		# img.axes.grid(False)
 		# plt.show()
-		# preprocess sample data
+		# # preprocess sample data
 		with h5py.File(self.data_path) as data:
 			x = (sample - data['train_mean'][:]) / data['train_std'][:]
 		# build model architecture ending with different layers
@@ -70,7 +72,7 @@ class Analyser:
 
 		# use number of dimensions to determine the layout of subplot
 		dimensions, divider = bottom_layer.shape[-1], 2 ** (stage // 2 + 3)
-		plt.figure(figsize=(20, 20 * divider * divider // dimensions), facecolor=(0.2, 0.2, 0.2))
+		plt.figure(figsize=(50, 50 * divider * divider // dimensions), facecolor=(0.2, 0.2, 0.2))
 		for i in range(bottom_layer.shape[-1]):
 			plt.subplot(divider, dimensions // divider, i + 1)
 			sns.heatmap(bottom_layer[:, :, i], cmap='binary', xticklabels=False, yticklabels=False, cbar=False)
@@ -79,11 +81,12 @@ class Analyser:
 
 	# shift an occluded area over a positive image and collect the positive probabilities with different area occluded
 	# plot the collection on a heatmap to see which positions are more important to a positive classification
-	def heatmap(self, classifier, source=None):
+	def heatmap(self, classifier, mode='test', source=None):
 		tl = TransferLearner()
+		img_path = self.img_test_path if mode == 'test' else self.img_train_path
 		# pick 3 specific images or randomly pick 3 images from validation set
 		if source:
-			samples = [img_to_array(load_img(os.path.join(self.img_path, img), target_size=(299, 299))) for img in source]
+			samples = [img_to_array(load_img(os.path.join(img_path, img), target_size=(299, 299))) for img in source]
 			sample_ids = [int(img.replace('.jpg', '')) for img in source]
 		else:
 			with h5py.File(self.data_path) as data:
@@ -126,5 +129,5 @@ if __name__ == '__main__':
 	al = Analyser()
 	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
 	for i in range(5):
-		al.layer_visualizer('resnet50', stage=i+1, source='0149.jpg')
-	# al.heatmap('resnet50', source=['0120.jpg', '0219.jpg', '0222.jpg'])
+		al.layer_visualizer('resnet50', stage=i+1, source='0996.jpg')
+	# al.heatmap('resnet50', source=['0593.jpg', '0939.jpg', '0954.jpg'])
