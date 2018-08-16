@@ -22,11 +22,12 @@ logger_tc = logging.getLogger('tc')
 # utilize transfer learning to train the tumor classifier by adding FC layers on the top of a pre-trained classifier
 class TransferLearner:
 	def __init__(self):
+		self.num_classes = 2
 		self.resnet50_weights = os.path.realpath('models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5')
 		self.xception_weights = os.path.realpath('models/xception_weights_tf_dim_ordering_tf_kernels_notop.h5')
-		self.model_path = os.path.realpath('data/model.h5')
 		self.model_output_path = os.path.realpath('data/model_output.h5')
-		self.num_classes = 2
+		self.model_path = {'resnet50': os.path.realpath('data/model_resnet50.h5'),
+						   'xception': os.path.realpath('data/model_xception.h5')}
 		self.transfer_classifiers = {'resnet50': (ResNet50, self.resnet50_weights),
 		                             'xception': (Xception, self.xception_weights)}
 		self.du = DataUtils()
@@ -83,7 +84,7 @@ class TransferLearner:
 			model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 			model.fit(transfer_train_output, y_train, epochs=30, batch_size=128, verbose=0)
 			# only save model when parameter and cross validation finished
-			# model.save(self.model_path)
+			# model.save(self.model_path[classifier])
 			# validate
 			pred = model.predict(transfer_valid_output, batch_size=32)
 			y_pred = np.zeros(len(pred), dtype=int)
@@ -117,7 +118,7 @@ class TransferLearner:
 
 	def predict(self, X, classifier, model=None):
 		X = self._get_transfer(X, 'no_save', classifier)
-		return (model or load_model(self.model_path)).predict(X, batch_size=32)
+		return (model or load_model(self.model_path[classifier])).predict(X, batch_size=32)
 
 	def test(self, classifier, model=None):
 		du = DataUtils()

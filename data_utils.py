@@ -49,8 +49,8 @@ class DataUtils:
 			logger_tc.info('postive sample: %s\tnegative sample: %s' % (len(pos_idx), len(neg_idx)))
 
 			# split train and validation by 9 : 1 and merge positive and negative samples in train and val data respectively
-			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.2)
-			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.2)
+			X_pos_train, X_pos_valid, y_pos_train, y_pos_valid = data_split(features[pos_idx], labels[pos_idx], test_size=0.2, random_state=15)
+			X_neg_train, X_neg_valid, y_neg_train, y_neg_valid = data_split(features[neg_idx], labels[neg_idx], test_size=0.2, random_state=6)
 			X_train, X_valid = np.concatenate((X_pos_train, X_neg_train)), np.concatenate((X_pos_valid, X_neg_valid))
 			y_train, y_valid = np.concatenate((y_pos_train, y_neg_train)), np.concatenate((y_pos_valid, y_neg_valid))
 			logger_tc.info('train features shape: %s\tvalid features shape: %s' % (X_train.shape, X_valid.shape))
@@ -111,10 +111,10 @@ class DataUtils:
 			sample_label = data[y_mode][sample]
 			logger_tc.info('sample: [%s]' % ','.join(map(str, sample_label[:, 0])))
 			logger_tc.info('labels: [%s]' % ','.join(map(str, sample_label[:, 1])))
-			plt.figure(figsize=(100, 50))
+			plt.figure(figsize=(20, 10))
 			for i, img in enumerate(data[X_mode][sample]):
 				plt.subplot(2, 4, i + 1)
-				plt.title('sample %s' % sample_label[i, 0], fontsize=20)
+				plt.title('sample %s' % sample_label[i, 0], fontsize=16)
 				plt.imshow(np.uint8(img))
 			plt.show()
 
@@ -144,6 +144,6 @@ if __name__ == '__main__':
 	du = DataUtils()
 	# du.data_extract('train')
 	# du.data_augment()
-	# du.image_sampling(mode='valid', check_aug=True)
-	du.image_sampling(mode='valid')
+	du.image_sampling(mode='valid', check_aug=True)
+	# du.image_sampling(mode='valid')
 	# du.data_preprocess('train')

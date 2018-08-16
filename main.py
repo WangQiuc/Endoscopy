@@ -32,7 +32,8 @@ if __name__ == '__main__':
 	# tc.data_utils.data_extract('test')
 	# model = tc.transfer_learner.train('resnet50', 'model')
 	# tc.transfer_learner.test('resnet50', model)
+	# tc.transfer_learner.test('resnet50')
 	# tc.analyser.roc_curve('y_test', 'resnet50_test_pred')
 	# for i in range(5):
 	# 	tc.analyser.layer_visualizer('resnet50', stage=i+1, source='0996.jpg')
-	tc.analyser.heatmap('resnet50', source=['0593.jpg', '0942.jpg', '0971.jpg'])
+	tc.analyser.heatmap('resnet50', load=False, source=['0593.jpg', '0942.jpg', '0971.jpg'])

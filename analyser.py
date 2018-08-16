@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from keras.applications import ResNet50, Xception
+from keras.models import load_model
 from keras.layers import Input
 from keras.preprocessing.image import load_img, img_to_array
 from keras import backend as K
@@ -24,15 +25,16 @@ class Analyser:
 	def __init__(self):
 		self.img_train_path = os.path.realpath('data/pic_train')
 		self.img_test_path = os.path.realpath('data/pic_test')
+		self.num_classes = 2
 		self.resnet50_weights = os.path.realpath('models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5')
 		self.xception_weights = os.path.realpath('models/xception_weights_tf_dim_ordering_tf_kernels_notop.h5')
 		self.data_path = os.path.realpath('data/data.h5')
 		self.model_output_path = os.path.realpath('data/model_output.h5')
-		self.model_path = os.path.realpath('data/model.h5')
-		self.num_classes = 2
+		self.model_path = {'resnet50': os.path.realpath('data/model_resnet50.h5'),
+						   'xception': os.path.realpath('data/model_xception.h5')}
 		self.transfer_classifiers = {'resnet50': (ResNet50, self.resnet50_weights),
 		                             'xception': (Xception, self.xception_weights)}
-		self.layer_stages = {'resnet50': [3, 36, 78, 140, 172],
+		self.layer_stages = {'resnet50': [3, 36, 78, 140, 172, -1],
 		                     'xception': []}
 
 	# output roc curve
@@ -70,6 +72,10 @@ class Analyser:
 		f = K.function([model.layers[0].input, K.learning_phase()], [model.layers[layer].output])
 		bottom_layer = f([x, 0])[0][0]
 
+		# if stage is 0 which to be final layer, return vector instead of heatmap
+		if not stage:
+			return bottom_layer
+
 		# use number of dimensions to determine the layout of subplot
 		dimensions, divider = bottom_layer.shape[-1], 2 ** (stage // 2 + 3)
 		plt.figure(figsize=(50, 50 * divider * divider // dimensions), facecolor=(0.2, 0.2, 0.2))
@@ -81,7 +87,7 @@ class Analyser:
 
 	# shift an occluded area over a positive image and collect the positive probabilities with different area occluded
 	# plot the collection on a heatmap to see which positions are more important to a positive classification
-	def heatmap(self, classifier, mode='test', source=None):
+	def heatmap(self, classifier, mode='test', load=True, source=None):
 		tl = TransferLearner()
 		img_path = self.img_test_path if mode == 'test' else self.img_train_path
 		# pick 3 specific images or randomly pick 3 images from validation set
@@ -94,7 +100,8 @@ class Analyser:
 				samples, sample_ids = data['X_valid'][:][idx], data['y_valid'][:][idx, 0]
 		pic_len = len(samples[0])
 		heat_maps = []
-		model = tl.train(classifier, 'model')
+		# load a trained model or train a new model
+		model = load_model(self.model_path[classifier]) if load else tl.train(classifier, 'model')
 		for i in range(3):
 			occ_samples = []
 			sample = samples[i]
@@ -128,6 +135,8 @@ class Analyser:
 if __name__ == '__main__':
 	al = Analyser()
 	# al.roc_curve('y_valid_a', 'resnet50_valid_pred')
+	# print(al.layer_visualizer('resnet50', mode='train', stage=0, source='0996.jpg'))
 	for i in range(5):
-		al.layer_visualizer('resnet50', stage=i+1, source='0996.jpg')
-	# al.heatmap('resnet50', source=['0593.jpg', '0939.jpg', '0954.jpg'])
+		al.layer_visualizer('resnet50', stage=i+1, mode='train', source='0903.jpg')
+	# al.heatmap('resnet50', load=False, source=['0968.jpg', '0687.jpg', '0995.jpg'])
+
